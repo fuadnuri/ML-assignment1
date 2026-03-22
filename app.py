@@ -47,6 +47,8 @@ section = st.sidebar.radio(
 
 st.sidebar.markdown("---")
 st.sidebar.caption("ML Assignment — AAU AI Year 1, Semester 2")
+st.sidebar.caption("By: Fuad Nuri")
+st.sidebar.caption("ID: GSE/1569/18")
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
