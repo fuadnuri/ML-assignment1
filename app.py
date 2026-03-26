@@ -74,6 +74,16 @@ def load_artifacts(problem_type):
     return model, fe
 
 
+def load_metrics(problem_type):
+    """Load saved metrics from JSON."""
+    import json
+    path = os.path.join(OUTPUT_DIR, problem_type.lower(), "metrics.json")
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            return json.load(f)
+    return None
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 #  CLASSIFICATION
 # ══════════════════════════════════════════════════════════════════════════════
@@ -127,20 +137,23 @@ if problem == "Classification":
             show_image(os.path.join(eval_dir, "roc_curve.png"),
                        "ROC Curve")
 
-        st.subheader("Model Comparison")
-        comparison = pd.DataFrame({
-            "Model": ["Logistic Regression", "Random Forest", "Gradient Boosting"],
-            "CV Accuracy": [0.7994, 0.9587, 0.9585],
-        })
-        st.dataframe(comparison.style.highlight_max(subset=["CV Accuracy"]),
-                     use_container_width=True)
+        metrics = load_metrics("classification")
+        if metrics:
+            st.subheader("Model Comparison")
+            comp_df = pd.DataFrame(metrics["cv_results"])
+            comp_df.columns = ["Model", "CV Accuracy", "CV Std"]
+            st.dataframe(comp_df.style.highlight_max(subset=["CV Accuracy"]),
+                         use_container_width=True)
 
-        st.subheader("Test Set Metrics (Best Model — Random Forest)")
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Accuracy", "95.5%")
-        m2.metric("Precision", "95.5%")
-        m3.metric("Recall", "95.5%")
-        m4.metric("ROC-AUC", "96.25%")
+            st.subheader(f"Test Set Metrics (Best Model — {metrics['best_model']})")
+            m1, m2, m3, m4 = st.columns(4)
+            tm = metrics["test_metrics"]
+            m1.metric("Accuracy", f"{tm.get('Accuracy', 0)*100:.1f}%")
+            m2.metric("Precision", f"{tm.get('Precision', 0)*100:.1f}%")
+            m3.metric("Recall", f"{tm.get('Recall', 0)*100:.1f}%")
+            m4.metric("ROC-AUC", f"{tm.get('ROC-AUC', 0)*100:.1f}%")
+        else:
+            st.info("Run `python main.py classification` to see detailed metrics.")
 
     # ── Predict ────────────────────────────────────────────────────────────
     elif section == "🔮 Predict":
@@ -253,20 +266,23 @@ elif problem == "Regression":
             show_image(os.path.join(eval_dir, "residuals.png"),
                        "Residual Analysis")
 
-        st.subheader("Model Comparison")
-        comparison = pd.DataFrame({
-            "Model": ["Linear Regression", "Random Forest", "Gradient Boosting"],
-            "CV R²": [0.8854, 0.8682, 0.9390],
-        })
-        st.dataframe(comparison.style.highlight_max(subset=["CV R²"]),
-                     use_container_width=True)
+        metrics = load_metrics("regression")
+        if metrics:
+            st.subheader("Model Comparison")
+            comp_df = pd.DataFrame(metrics["cv_results"])
+            comp_df.columns = ["Model", "CV R²", "CV Std"]
+            st.dataframe(comp_df.style.highlight_max(subset=["CV R²"]),
+                         use_container_width=True)
 
-        st.subheader("Test Set Metrics (Best Model — Gradient Boosting, Tuned)")
-        m1, m2, m3, m4 = st.columns(4)
-        m1.metric("R²", "0.975")
-        m2.metric("RMSE", "0.506")
-        m3.metric("MAE", "0.404")
-        m4.metric("MSE", "0.256")
+            st.subheader(f"Test Set Metrics (Best Model — {metrics['best_model']})")
+            m1, m2, m3, m4 = st.columns(4)
+            tm = metrics["test_metrics"]
+            m1.metric("R²", f"{tm.get('R²', 0):.3f}")
+            m2.metric("RMSE", f"{tm.get('RMSE', 0):.3f}")
+            m3.metric("MAE", f"{tm.get('MAE', 0):.3f}")
+            m4.metric("MSE", f"{tm.get('MSE', 0):.3f}")
+        else:
+            st.info("Run `python main.py regression` to see detailed metrics.")
 
     # ── Predict ────────────────────────────────────────────────────────────
     elif section == "🔮 Predict":

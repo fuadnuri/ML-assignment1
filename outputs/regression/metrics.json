@@ -1,0 +1,26 @@
+{
+    "best_model": "Gradient Boosting",
+    "cv_results": [
+        {
+            "model": "Linear Regression",
+            "cv_mean": 0.8853945921705121,
+            "cv_std": 0.0023183490390684116
+        },
+        {
+            "model": "Random Forest",
+            "cv_mean": 0.8682414963782739,
+            "cv_std": 0.004581022445052084
+        },
+        {
+            "model": "Gradient Boosting",
+            "cv_mean": 0.9390464803954487,
+            "cv_std": 0.002786424321024493
+        }
+    ],
+    "test_metrics": {
+        "MSE": 0.25555109008731114,
+        "RMSE": 0.5055206129202954,
+        "MAE": 0.40364248774716094,
+        "R\u00b2": 0.9751892950126841
+    }
+}

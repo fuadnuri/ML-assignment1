@@ -1,0 +1,27 @@
+{
+    "best_model": "Random Forest",
+    "cv_results": [
+        {
+            "model": "Logistic Regression",
+            "cv_mean": 0.7994295196774536,
+            "cv_std": 0.0057846896225616905
+        },
+        {
+            "model": "Random Forest",
+            "cv_mean": 0.9586851314124042,
+            "cv_std": 0.004443719004399034
+        },
+        {
+            "model": "Gradient Boosting",
+            "cv_mean": 0.9585350940722842,
+            "cv_std": 0.004955206512907538
+        }
+    ],
+    "test_metrics": {
+        "Accuracy": 0.9550113895216401,
+        "Precision": 0.9552783785831871,
+        "Recall": 0.9550113895216401,
+        "F1-Score": 0.9548315969832977,
+        "ROC-AUC": 0.9624862275319737
+    }
+}

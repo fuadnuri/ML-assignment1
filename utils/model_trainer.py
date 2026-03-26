@@ -141,6 +141,15 @@ class ModelTrainer:
         print(f"  💾  Model saved → {path}")
 
     @staticmethod
+    def save_metrics(path, metrics_dict):
+        """Save metrics to a JSON file."""
+        import json
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w") as f:
+            json.dump(metrics_dict, f, indent=4)
+        print(f"  📊  Metrics saved → {path}")
+
+    @staticmethod
     def load_model(path):
         """Load a model from disk."""
         return joblib.load(path)

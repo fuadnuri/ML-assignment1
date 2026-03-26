@@ -135,12 +135,12 @@ class RegressionPipeline:
         # Re-evaluate with tuned model
         print("  📐  Evaluating tuned model on test set:")
         y_pred = self.tuned_model.predict(self.X_test)
-        self.evaluator.evaluate_regression(self.y_test, y_pred)
+        self.test_metrics = self.evaluator.evaluate_regression(self.y_test, y_pred)
 
     # ── 8. Save ───────────────────────────────────────────────────────────────
 
     def save(self):
-        """Persist the final model and feature engineer."""
+        """Persist the final model, feature engineer, and metrics."""
         model_dir = os.path.join(self.OUTPUT_BASE, "models")
         os.makedirs(model_dir, exist_ok=True)
 
@@ -150,6 +150,24 @@ class RegressionPipeline:
         )
         joblib.dump(self.feature_engineer, os.path.join(model_dir, "feature_engineer.pkl"))
         print(f"  💾  Feature engineer saved → {model_dir}/feature_engineer.pkl")
+
+        # Save metrics
+        metrics = {
+            "best_model": self.trainer.best_model_name,
+            "cv_results": [
+                {
+                    "model": name,
+                    "cv_mean": info["cv_mean"],
+                    "cv_std": info["cv_std"]
+                }
+                for name, info in self.trainer.results.items()
+            ],
+            "test_metrics": self.test_metrics
+        }
+        self.trainer.save_metrics(
+            os.path.join(self.OUTPUT_BASE, "metrics.json"),
+            metrics
+        )
 
     # ── Full run ──────────────────────────────────────────────────────────────
 
