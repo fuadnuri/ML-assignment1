@@ -28,7 +28,6 @@ build/
 Thumbs.db
 
 # Model artifacts
-*.pkl
 *.joblib
 *.h5
 
